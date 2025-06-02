@@ -1,6 +1,8 @@
+.cache/
 build/
 .git/
 
 cmake_run.sh
 build_run.sh
 run.sh
+compile_commands.json

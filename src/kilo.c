@@ -1,12 +1,11 @@
-// #include <stdio.h>
 #include "kilo.h"
 
+#include <stdio.h>
+#include <ctype.h>
 #include <termios.h>
 #include <unistd.h>
 #include <stdint.h>
 #include <stdlib.h>
-
-#include "vendor.h"
 
 struct termios orig_termios;
 
@@ -15,7 +14,13 @@ void EnableRawMode() {
   atexit(DisableRawMode);
 
   struct termios raw = orig_termios;
-  raw.c_lflag &= ~(ECHO | ICANON);
+  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+  raw.c_oflag &= ~(OPOST);
+  raw.c_cflag |= (CS8);
+  raw.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);
+
+  raw.c_cc[VMIN] = 0;
+  raw.c_cc[VTIME] = 1;
 
   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 }
@@ -26,9 +31,21 @@ void DisableRawMode() {
 
 int main() {
   EnableRawMode();
+  
+  while (1) {
+    int8_t c = '\0';
+    read(STDIN_FILENO, &c, 1);
 
-  int8_t c;
-  while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q');
+    if (iscntrl(c)) {
+      printf("%d\r\n", c);
+    } else {
+      printf("%d (' %c ')\r\n", c, c);
+    }
+
+    if (c == 'q') {
+      break;
+    }
+  }
 
   return EXIT_SUCCESS;
 }
