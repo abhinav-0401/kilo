@@ -4,4 +4,6 @@
 void EnableRawMode();
 void DisableRawMode();
 
+void Die(const char* err);
+
 #endif

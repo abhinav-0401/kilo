@@ -10,7 +10,9 @@
 struct termios orig_termios;
 
 void EnableRawMode() {
-  tcgetattr(STDIN_FILENO, &orig_termios);
+  if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) {
+    Die("tcgetattr");
+  }
   atexit(DisableRawMode);
 
   struct termios raw = orig_termios;
@@ -22,11 +24,15 @@ void EnableRawMode() {
   raw.c_cc[VMIN] = 0;
   raw.c_cc[VTIME] = 1;
 
-  tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+  if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) {
+    Die("tcgetattr");
+  }
 }
 
 void DisableRawMode() {
-  tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) { 
+    Die("tcsetattr");
+  }
 }
 
 int main() {
@@ -34,7 +40,9 @@ int main() {
   
   while (1) {
     int8_t c = '\0';
-    read(STDIN_FILENO, &c, 1);
+    if (read(STDIN_FILENO, &c, 1) == -1) {
+      Die("read");
+    }
 
     if (iscntrl(c)) {
       printf("%d\r\n", c);
@@ -48,4 +56,9 @@ int main() {
   }
 
   return EXIT_SUCCESS;
+}
+
+void Die(const char* err) {
+  perror(err);
+  exit(1);
 }
