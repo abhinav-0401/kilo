@@ -57,13 +57,13 @@ void EditorRefreshScreen() {
 }
 
 void EditorRefreshScreenAtStart() {
-    AppendBuf appendBuf = ABUF_INIT;    // using this macro feels so disgusting
+    AppendBuf appendBuf = ABUF_INIT; // using this macro feels so disgusting
 
     AppendBuf_Append(&appendBuf, "\x1b[2J", 4);
     AppendBuf_Append(&appendBuf, "\x1b[H", 3);
     EditorDrawRows(&appendBuf);
     AppendBuf_Append(&appendBuf, "\x1b[H", 3);
-    
+
     write(STDOUT_FILENO, appendBuf.buf, appendBuf.len);
 
     AppendBuf_Free(&appendBuf);
@@ -84,12 +84,31 @@ char EditorReadKey() {
 
 void EditorDrawRows(AppendBuf* appendBuf) {
     for (int y = 0; y < kiloConfig.screenRows; ++y) {
-        AppendBuf_Append(appendBuf, "~", 1);
-        // write(STDOUT_FILENO, "~", 1);
+        if (y == kiloConfig.screenRows / 3) {
+            char welcomeMsg[80];
+
+            size_t msgLen = snprintf(welcomeMsg, sizeof(welcomeMsg), "Welcome to the Kilo Editor -- v%s", KILO_VERSION);
+            if (msgLen > kiloConfig.screenCols) {
+                msgLen = kiloConfig.screenCols;
+            }
+
+            size_t padding = (kiloConfig.screenCols - msgLen) / 2;
+            if (padding) {
+                AppendBuf_Append(appendBuf, "~", 1);
+                --padding;
+            }
+            while (padding--) {
+                AppendBuf_Append(appendBuf, " ", 1);
+            }
+
+            AppendBuf_Append(appendBuf, welcomeMsg, msgLen);
+
+        } else {
+            AppendBuf_Append(appendBuf, "~", 1);
+        }
 
         if (y < kiloConfig.screenRows - 1) {
             AppendBuf_Append(appendBuf, "\r\n", 2);
-            // write(STDOUT_FILENO, "\r\n", 2);
         }
     }
 }

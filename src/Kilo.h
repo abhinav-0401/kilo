@@ -1,8 +1,10 @@
 #ifndef KILO_KILO_H
 #define KILO_KILO_H
 
-#include <termios.h>
+#define KILO_VERSION "0.0.1"
+
 #include <stddef.h>
+#include <termios.h>
 
 typedef struct EditorConfig {
     int screenRows;

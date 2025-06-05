@@ -1,5 +1,7 @@
 BasedOnStyle: Microsoft
 
+ColumnLimit: 120
+
 BreakBeforeBraces: Attach
 AccessModifierOffset: -4
 PointerAlignment: Left
