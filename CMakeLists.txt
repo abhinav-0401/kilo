@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
-project(kilo)
+project(Kilo)
 
 set(CMAKE_C_STANDARD 17)
 
-add_executable(kilo)
+add_executable(Kilo)
 
 add_subdirectory(src)
 

@@ -1,4 +1,5 @@
-BasedOnStyle: Google
-ColumnLimit: 120
+BasedOnStyle: Microsoft
 
-AccessModifierOffset: -2
+BreakBeforeBraces: Attach
+AccessModifierOffset: -4
+PointerAlignment: Left

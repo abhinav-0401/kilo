@@ -1,3 +1,3 @@
-target_sources(kilo PRIVATE
-  kilo.c
+target_sources(Kilo PRIVATE
+    Kilo.c
 )
